@@ -17,9 +17,33 @@ export function swing(v, ampDeg, curve) {
 const REFERENCE_ASPECT = 1.778;
 const MIN_FIT = 0.9;
 
+// Below this aspect the window is a portrait phone/tablet: the layout stacks the
+// copy above the figure and the panels below it, so the subject has to give back
+// far more than the gentle desktop trim and sit lower to leave that band clear.
+// The ramp bottoms out at 0.58 because both common phone shapes — 16:9 (0.56)
+// and 19.5:9 (0.46) — need the same treatment; only tablets sit between it and
+// PORTRAIT_ASPECT.
+const PORTRAIT_ASPECT = 0.95;
+const NARROWEST_ASPECT = 0.58;
+const PORTRAIT_FIT = 0.5;
+const PORTRAIT_DROP = 0.44;
+
+const ramp = (aspect) =>
+  Math.min(1, Math.max(0, (PORTRAIT_ASPECT - aspect) / (PORTRAIT_ASPECT - NARROWEST_ASPECT)));
+
 // How much the whole subject gives back on a narrow/squarer window, so the
 // masthead and copy keep clearing the figure without a layout-owned fit box.
 export function narrowFit(aspect) {
   if (aspect >= REFERENCE_ASPECT) return 1;
-  return Math.max(MIN_FIT, Math.min(1, aspect / REFERENCE_ASPECT));
+  if (aspect >= PORTRAIT_ASPECT) {
+    return Math.max(MIN_FIT, Math.min(1, aspect / REFERENCE_ASPECT));
+  }
+  return MIN_FIT - (MIN_FIT - PORTRAIT_FIT) * ramp(aspect);
+}
+
+// World units the subject slides down by on a portrait window, so the shrunken
+// figure lands in the band between the identity copy and the panels rail.
+export function narrowDrop(aspect) {
+  if (aspect >= PORTRAIT_ASPECT) return 0;
+  return PORTRAIT_DROP * ramp(aspect);
 }

@@ -7,7 +7,7 @@ import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { getSceneTier } from "./tier.js";
-import { CAMERA_FOV, CAMERA_Y, visibleWorldHeight, swing, narrowFit } from "./fit.js";
+import { CAMERA_FOV, CAMERA_Y, visibleWorldHeight, swing, narrowFit, narrowDrop } from "./fit.js";
 import { DEFAULT_PARAMS } from "./params.js";
 
 const HEAD_HEIGHT = 5.4;
@@ -192,7 +192,7 @@ export class HeroScene {
     const riseOffset = this.riseOffset(t, p);
     this.subjectGroup.scale.setScalar(p.subjectScale * narrowFit(this.aspect));
     this.subjectGroup.position.x = p.subjectX + this.smoothed.x * p.subjectParallax;
-    this.subjectGroup.position.y = p.subjectY - this.smoothed.y * p.subjectParallax - riseOffset;
+    this.subjectGroup.position.y = p.subjectY - narrowDrop(this.aspect) - this.smoothed.y * p.subjectParallax - riseOffset;
 
     if (this.headMaterial) {
       this.headMaterial.uniforms.uParallax.value.set(this.smoothed.x, -this.smoothed.y);
