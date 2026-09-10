@@ -95,40 +95,57 @@ function initScene(root) {
     veilFill.style.transform = "scaleY(0.7)";
   });
 
+  const veilState = { dismissed: false };
+  const dismissVeil = () => {
+    if (veilState.dismissed || !veil) return;
+    veilState.dismissed = true;
+    veil.classList.add("is-clearing");
+    window.setTimeout(() => veil.classList.add("is-hidden"), 240);
+  };
+  // A slow connection or a stalled 3D asset must never keep the already-rendered
+  // page (name, meta, CTA) hidden behind the veil indefinitely.
+  const veilTimeoutId = window.setTimeout(dismissVeil, 3000);
+
   // three.js + loaders live in their own chunk, fetched only here — off the critical path for the rest of the page.
   import("../scene/HeroScene.js")
-    .then(({ HeroScene }) => bootScene(HeroScene, { root, canvas, veil, veilFill, meterFill, errorBanner }))
+    .then(({ HeroScene }) => bootScene(HeroScene, { root, canvas, veil, veilFill, meterFill, errorBanner, veilState, dismissVeil, veilTimeoutId }))
     .catch((error) => {
+      window.clearTimeout(veilTimeoutId);
       if (errorBanner) {
         errorBanner.textContent = `Falha ao carregar o motor 3D: ${error?.message ?? error}`;
         errorBanner.hidden = false;
       }
-      veil?.classList.add("is-hidden");
+      dismissVeil();
     });
 }
 
-function bootScene(HeroScene, { root, canvas, veil, veilFill, meterFill, errorBanner }) {
+function bootScene(HeroScene, { root, canvas, veil, veilFill, meterFill, errorBanner, veilState, dismissVeil, veilTimeoutId }) {
   const scene = new HeroScene(canvas, {
     assetsBase: ASSET_BASE_URL,
     onReady: () => {
+      window.clearTimeout(veilTimeoutId);
+      if (veilState.dismissed) {
+        // The timeout fallback already revealed the page — bring the scene in quietly.
+        scene.beginRise();
+        return;
+      }
       meterFill.style.transition = "transform 260ms cubic-bezier(0.2,0,0,1)";
       veilFill.style.transition = "transform 260ms cubic-bezier(0.2,0,0,1)";
       meterFill.style.transform = "scaleX(1)";
       veilFill.style.transform = "scaleY(1)";
       veil.classList.add("is-ready");
       window.setTimeout(() => {
-        veil.classList.add("is-clearing");
-        window.setTimeout(() => {
-          veil.classList.add("is-hidden");
-          scene.beginRise();
-        }, 240);
+        dismissVeil();
+        window.setTimeout(() => scene.beginRise(), 240);
       }, 430);
     },
     onError: (message) => {
-      if (!errorBanner) return;
-      errorBanner.textContent = `Falha ao carregar asset: ${message}`;
-      errorBanner.hidden = false;
-      veil.classList.add("is-hidden");
+      window.clearTimeout(veilTimeoutId);
+      if (errorBanner) {
+        errorBanner.textContent = `Falha ao carregar asset: ${message}`;
+        errorBanner.hidden = false;
+      }
+      dismissVeil();
     },
   });
 

@@ -2,7 +2,9 @@
 
 **Escopo:** responsividade mobile, superfície de segurança web, velocidade de carga/runtime.
 **Método:** leitura estática de todo `src/`, build de produção (`npm run build`) e inspeção dos bytes reais em `dist/assets`, `npm audit`. Sem Lighthouse em device real — os achados abaixo são determinísticos no código, não estimativas.
-**Data:** 2026-09-10.
+**Data original:** 2026-09-10. **Reauditoria:** 2026-09-10 (mesmo dia, após o commit de correção `f1a6e50`).
+
+> Reauditoria: M-1, M-2, M-3, M-4, S-1, S-2, S-4, V-2, V-3, V-4 foram verificados como corrigidos lendo o código atual e o build real. Dois achados novos surgiram da correção em si — **M-5** (painéis do hero somem no mobile em vez de reorganizar) e **V-1** (véu de carregamento sem timeout, bloqueia a página inteira indefinidamente em conexão lenta) — e foram corrigidos nesta rodada. Detalhe completo no relatório publicado como artifact nesta sessão.
 
 ---
 
