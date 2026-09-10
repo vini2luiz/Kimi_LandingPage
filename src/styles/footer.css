@@ -131,3 +131,78 @@
 }
 .footer-social-link { color: var(--foreground-on-dark); transition: color var(--duration-fast) var(--ease-entrance); }
 .footer-social-link:hover { color: var(--accent); }
+
+/* =========================================================================
+   Stacked footer — phones. The desktop card absolutely positions the logo,
+   the "keep pushing forward" masthead, the figure (helmet + body) and the nav
+   column on top of each other inside one full-viewport-height panel; below
+   640px the masthead and the figure just went display:none, leaving an empty
+   accent-colored card with the nav floating in the middle. Restore everything
+   as a normal flex column instead.
+   ========================================================================= */
+@media (max-width: 767px), (max-width: 1024px) and (orientation: portrait) {
+  [data-footer] { min-height: auto; }
+
+  .footer-panel {
+    position: relative;
+    inset: auto;
+    margin: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem 1.5rem 2rem;
+  }
+
+  .footer-logo {
+    display: block;
+    position: relative;
+    z-index: 1;
+    order: 1;
+    left: auto;
+    top: auto;
+  }
+
+  .footer-masthead {
+    display: block;
+    position: relative;
+    z-index: 1;
+    order: 2;
+    top: auto;
+    right: auto;
+    width: 100%;
+    text-align: left;
+    font-size: min(var(--type-display), 13vw);
+  }
+
+  .footer-figure {
+    display: block;
+    position: relative;
+    z-index: 1;
+    order: 3;
+    inset: auto;
+    height: 60vh;
+    min-height: 22rem;
+  }
+
+  .footer-nav-col {
+    position: relative;
+    z-index: 1;
+    order: 4;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .footer-foot-row {
+    position: relative;
+    z-index: 1;
+    order: 5;
+    inset-inline: auto;
+    bottom: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+}

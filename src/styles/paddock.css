@@ -176,3 +176,81 @@
   from { transform: scale(1); opacity: 0.5; }
   to { transform: scale(3.4); opacity: 0; }
 }
+
+/* =========================================================================
+   Stacked paddock — phones. The desktop layout is a full-bleed portrait photo
+   with headline/copy/stats absolutely positioned on top of it in cqw units;
+   below 640px that collapsed to display:none on the photo and the stats rail,
+   leaving only the heading, intro copy and calendar strip. Restore them as a
+   normal flex column instead of trying to keep the absolute overlay working
+   at phone widths.
+   ========================================================================= */
+@media (max-width: 767px), (max-width: 1024px) and (orientation: portrait) {
+  [data-paddock] {
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .paddock-band, .paddock-band-fade { display: none; }
+
+  .paddock-portrait {
+    display: block;
+    position: relative;
+    z-index: 1;
+    order: 2;
+    left: auto;
+    bottom: auto;
+    transform: none !important;
+    width: 100%;
+    height: auto;
+  }
+
+  .paddock-intro-head {
+    position: relative;
+    z-index: 1;
+    order: 1;
+    left: auto;
+    top: auto;
+    padding: 2rem 1.5rem 0;
+    font-size: min(var(--type-display-lg), 15vw);
+  }
+
+  .paddock-intro-col {
+    position: relative;
+    z-index: 1;
+    order: 3;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    padding: 1.5rem;
+    color: var(--foreground);
+  }
+
+  .paddock-panels {
+    display: flex;
+    position: relative;
+    z-index: 1;
+    order: 4;
+    right: auto;
+    top: auto;
+    width: auto;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 0 1.5rem 2rem;
+  }
+  .paddock-panel { padding-block: 0.5rem; }
+  .paddock-stats-row { justify-content: flex-start; gap: 1rem; align-items: center; }
+
+  .paddock-calendar-band {
+    position: relative;
+    z-index: 1;
+    order: 5;
+    inset-inline: auto;
+    bottom: auto;
+    height: auto;
+    min-height: 110px;
+    background: var(--surface-black);
+  }
+}
