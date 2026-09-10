@@ -13,7 +13,6 @@ import { DEFAULT_PARAMS } from "./params.js";
 const HEAD_HEIGHT = 5.4;
 const HELMET_WORN_OFFSET = new Vector3(0, -0.56, 0.35);
 const STATIC_POSE = { x: 0.3, y: 0.1 };
-const DRACO_DECODER = "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/libs/draco/gltf/";
 
 const headVertex = /* glsl */ `
   varying vec2 vUv;
@@ -258,8 +257,9 @@ export class HeroScene {
           );
         });
 
+      // No setDecoderPath: keeps the WASM/JS decoder same-origin (bundled by Vite) instead of a third-party CDN.
       const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath(DRACO_DECODER);
+      dracoLoader.setDecoderConfig({ type: "wasm" }); // never fetch the large JS-fallback decoder
       const gltfLoader = new GLTFLoader();
       gltfLoader.setDRACOLoader(dracoLoader);
 

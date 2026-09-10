@@ -7,15 +7,14 @@
   color: var(--foreground-on-dark);
   padding-bottom: 10.4167cqw;
 }
-@media (max-width: 639px) { [data-timeline] { padding-bottom: 5cqw; } }
+@media (max-width: 1023px) { [data-timeline] { padding-bottom: 5cqw; } }
 
 .timeline-wrapper {
   position: relative;
   width: 100%;
   padding-top: 11.7361cqw;
 }
-@media (max-width: 1023px) { .timeline-wrapper { padding-top: calc(11.7361cqw + 16cqw); } }
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   .timeline-wrapper { display: flex; flex-direction: column; gap: 2.5rem; padding: 96px 24px 0; }
 }
 
@@ -34,7 +33,7 @@
   color: var(--accent);
   font-size: max(3.8194cqw, 40px);
 }
-@media (max-width: 639px) { .timeline-title-h2 { position: static; text-align: left; width: auto; } }
+@media (max-width: 1023px) { .timeline-title-h2 { position: static; text-align: left; width: auto; } }
 .timeline-title-dot { color: var(--foreground-on-dark); }
 
 .timeline-rail {
@@ -46,8 +45,7 @@
   width: 1.1111cqw;
   top: 0;
 }
-@media (max-width: 1023px) { .timeline-rail { top: calc(11.7361cqw + 16cqw); } }
-@media (max-width: 639px) { .timeline-rail { display: none; } }
+@media (max-width: 1023px) { .timeline-rail { display: none; } }
 
 .timeline-row {
   position: relative;
@@ -55,7 +53,7 @@
   height: max(32.0833cqw, 462px);
 }
 .timeline-row.is-side { height: max(15.0694cqw, 217px); }
-@media (max-width: 639px) { .timeline-row, .timeline-row.is-side { height: auto; } }
+@media (max-width: 1023px) { .timeline-row, .timeline-row.is-side { height: auto; } }
 
 .timeline-plate {
   position: absolute;
@@ -68,7 +66,7 @@
 .timeline-plate.align-left { left: max(2.2222cqw, 32px); }
 .timeline-plate.align-right { right: max(2.2222cqw, 32px); }
 .timeline-plate.align-center { left: 50%; transform: translateX(-50%); }
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   .timeline-plate, .timeline-row.is-side .timeline-plate { position: static; width: 82%; aspect-ratio: 710/462; transform: none; }
   .timeline-plate.align-left, .timeline-plate.align-center { margin-inline: auto 0; }
   .timeline-plate.align-right { margin-inline: 0 auto; }

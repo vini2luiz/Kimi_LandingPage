@@ -29,8 +29,8 @@ export function initContourBackdrop(canvas, colorVar) {
   };
 
   const draw = (now) => {
+    if (!inView) { raf = null; return; }
     raf = requestAnimationFrame(draw);
-    if (!inView) return;
     const width = canvas.width;
     const height = canvas.height;
     if (!width || !height) return;
@@ -91,7 +91,10 @@ export function initContourBackdrop(canvas, colorVar) {
     ctx.globalAlpha = 1;
   };
 
-  const io = new IntersectionObserver((entries) => { inView = entries[0].isIntersecting; }, { threshold: 0.01 });
+  const io = new IntersectionObserver((entries) => {
+    inView = entries[0].isIntersecting;
+    if (inView && raf === null) raf = requestAnimationFrame(draw);
+  }, { threshold: 0.01 });
   io.observe(canvas);
   window.addEventListener("resize", resize);
   resize();

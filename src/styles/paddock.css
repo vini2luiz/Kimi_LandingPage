@@ -65,7 +65,7 @@
   flex-direction: column;
   gap: 2.7778cqw;
 }
-@media (max-width: 639px) { .paddock-intro-col { left: 24px; bottom: 139px; width: 320px; color: var(--foreground-on-dark); } }
+@media (max-width: 639px) { .paddock-intro-col { left: 24px; bottom: 139px; width: min(320px, calc(100cqw - 48px)); color: var(--foreground-on-dark); } }
 
 .paddock-report-copy {
   margin: 0;
@@ -143,7 +143,10 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  gap: 1.5rem;
   padding-inline: 4%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   color: var(--foreground-on-dark);
 }
 .calendar-round-item {
@@ -151,6 +154,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.6em;
+  flex: none;
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(0.5rem);

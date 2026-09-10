@@ -196,8 +196,9 @@ function initCircuit(root) {
   };
 
   const frame = (now) => {
+    if (done) return;
     requestAnimationFrame(frame);
-    if (!armed || done) return;
+    if (!armed) return;
     if (lapStart === null) lapStart = now;
     const lapElapsed = now - lapStart;
     if (lapElapsed <= LAP_MS) {
@@ -215,11 +216,11 @@ function initCircuit(root) {
   window.addEventListener("resize", () => { resize(); render(); });
   resize();
   render();
-  requestAnimationFrame(frame);
 
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !armed) {
       armed = true;
+      requestAnimationFrame(frame);
       observer.disconnect();
     }
   }, { threshold: 0.35 });

@@ -2,7 +2,6 @@ import { subscribe } from "../lib/ticker.js";
 import { splitReveal, playReveal, revealOnEnter } from "../lib/text-reveal.js";
 import { revealOnView } from "../lib/scroll.js";
 import { initContourBackdrop } from "../lib/contours.js";
-import { HeroScene } from "../scene/HeroScene.js";
 import { ASSET_BASE_URL } from "../data/assets.js";
 
 export function initHero(root) {
@@ -38,7 +37,21 @@ function initMobileSheet(root) {
   };
   openBtn.addEventListener("click", open);
   closeBtn.addEventListener("click", close);
-  sheet.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  sheet.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { close(); return; }
+    if (e.key !== "Tab") return;
+    const focusable = Array.from(sheet.querySelectorAll("a[href], button")).filter((el) => el.offsetParent !== null);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
   const mq = window.matchMedia("(min-width: 1280px)");
   mq.addEventListener("change", (e) => { if (e.matches) close(); });
 }
@@ -74,6 +87,27 @@ function initScene(root) {
   const meterFill = veil?.querySelector(".veil-meter-fill");
   const errorBanner = document.getElementById("asset-error-banner");
 
+  // The meter creeps toward 0.7 while loading, then a stiffer step finishes it on ready.
+  requestAnimationFrame(() => {
+    meterFill.style.transition = "transform 4s cubic-bezier(0.1,0.7,0.2,1)";
+    veilFill.style.transition = "transform 4s cubic-bezier(0.1,0.7,0.2,1)";
+    meterFill.style.transform = "scaleX(0.7)";
+    veilFill.style.transform = "scaleY(0.7)";
+  });
+
+  // three.js + loaders live in their own chunk, fetched only here — off the critical path for the rest of the page.
+  import("../scene/HeroScene.js")
+    .then(({ HeroScene }) => bootScene(HeroScene, { root, canvas, veil, veilFill, meterFill, errorBanner }))
+    .catch((error) => {
+      if (errorBanner) {
+        errorBanner.textContent = `Falha ao carregar o motor 3D: ${error?.message ?? error}`;
+        errorBanner.hidden = false;
+      }
+      veil?.classList.add("is-hidden");
+    });
+}
+
+function bootScene(HeroScene, { root, canvas, veil, veilFill, meterFill, errorBanner }) {
   const scene = new HeroScene(canvas, {
     assetsBase: ASSET_BASE_URL,
     onReady: () => {
@@ -96,14 +130,6 @@ function initScene(root) {
       errorBanner.hidden = false;
       veil.classList.add("is-hidden");
     },
-  });
-
-  // The meter creeps toward 0.7 while loading, then a stiffer step finishes it on ready.
-  requestAnimationFrame(() => {
-    meterFill.style.transition = "transform 4s cubic-bezier(0.1,0.7,0.2,1)";
-    veilFill.style.transition = "transform 4s cubic-bezier(0.1,0.7,0.2,1)";
-    meterFill.style.transform = "scaleX(0.7)";
-    veilFill.style.transform = "scaleY(0.7)";
   });
 
   const resize = () => {
