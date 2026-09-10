@@ -1,0 +1,115 @@
+[data-timeline] {
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  background: var(--surface-black);
+  color: var(--foreground-on-dark);
+  padding-bottom: 10.4167cqw;
+}
+@media (max-width: 639px) { [data-timeline] { padding-bottom: 5cqw; } }
+
+.timeline-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 11.7361cqw;
+}
+@media (max-width: 1023px) { .timeline-wrapper { padding-top: calc(11.7361cqw + 16cqw); } }
+@media (max-width: 639px) {
+  .timeline-wrapper { display: flex; flex-direction: column; gap: 2.5rem; padding: 96px 24px 0; }
+}
+
+.timeline-title-h2 {
+  position: absolute;
+  z-index: 20;
+  top: max(2.2222cqw, 32px);
+  right: max(2.2222cqw, 32px);
+  width: max(20.3472cqw, 300px);
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+  text-align: right;
+  color: var(--accent);
+  font-size: max(3.8194cqw, 40px);
+}
+@media (max-width: 639px) { .timeline-title-h2 { position: static; text-align: left; width: auto; } }
+.timeline-title-dot { color: var(--foreground-on-dark); }
+
+.timeline-rail {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 1.1111cqw;
+  top: 0;
+}
+@media (max-width: 1023px) { .timeline-rail { top: calc(11.7361cqw + 16cqw); } }
+@media (max-width: 639px) { .timeline-rail { display: none; } }
+
+.timeline-row {
+  position: relative;
+  width: 100%;
+  height: max(32.0833cqw, 462px);
+}
+.timeline-row.is-side { height: max(15.0694cqw, 217px); }
+@media (max-width: 639px) { .timeline-row, .timeline-row.is-side { height: auto; } }
+
+.timeline-plate {
+  position: absolute;
+  inset-block: 0;
+  width: max(49.3056cqw, 710px);
+  overflow: hidden;
+  background: var(--timeline-fill);
+}
+.timeline-row.is-side .timeline-plate { width: max(23.125cqw, 333px); }
+.timeline-plate.align-left { left: max(2.2222cqw, 32px); }
+.timeline-plate.align-right { right: max(2.2222cqw, 32px); }
+.timeline-plate.align-center { left: 50%; transform: translateX(-50%); }
+@media (max-width: 639px) {
+  .timeline-plate, .timeline-row.is-side .timeline-plate { position: static; width: 82%; aspect-ratio: 710/462; transform: none; }
+  .timeline-plate.align-left, .timeline-plate.align-center { margin-inline: auto 0; }
+  .timeline-plate.align-right { margin-inline: 0 auto; }
+}
+.timeline-plate-outline { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; stroke: var(--timeline-outline); stroke-width: 1; vector-effect: non-scaling-stroke; fill: none; pointer-events: none; }
+.timeline-plate-photo { position: absolute; inset: 0; width: 100%; height: 110%; object-fit: cover; object-position: top; transition: inset var(--duration-plate) var(--ease-plate); }
+.timeline-plate:hover .timeline-plate-photo { inset: 5%; height: calc(110% - 10%); }
+
+.timeline-year {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.95;
+  color: var(--accent);
+  font-size: max(2.5cqw, 30px);
+  transition: opacity 1.5s var(--ease-entrance);
+}
+.timeline-year.is-settled { opacity: 0.4; }
+
+.timeline-copy {
+  position: absolute;
+  left: max(70.8333cqw, 1020px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  pointer-events: none;
+  max-width: min(26.9444cqw, 30vw);
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--foreground-on-dark);
+  font-size: max(1.25cqw, 17px);
+  opacity: 0;
+  transition: opacity var(--duration-plate) var(--ease-entrance), transform var(--duration-plate) var(--ease-entrance);
+}
+.timeline-copy.is-in { opacity: 1; transform: translateY(calc(-50% + 0px)); }
+.timeline-copy b { font-weight: 700; }
+@media (max-width: 1279px) { .timeline-copy { position: static; transform: none; max-width: none; margin-top: 1rem; } }
+
+[data-timeline].is-dim-others .timeline-row:not(:hover) { opacity: 0.3; transition: opacity var(--duration-plate) var(--ease-plate); }
