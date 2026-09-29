@@ -140,7 +140,7 @@
    accent-colored card with the nav floating in the middle. Restore everything
    as a normal flex column instead.
    ========================================================================= */
-@media (max-width: 767px), (max-width: 1024px) and (orientation: portrait) {
+@media (max-width: 767px), (max-width: 1024px) and (orientation: portrait), (orientation: landscape) and (max-height: 500px) {
   [data-footer] { min-height: auto; }
 
   .footer-panel {
@@ -174,15 +174,22 @@
     font-size: min(var(--type-display), 13vw);
   }
 
+  /* Body and helmet are both sized off the figure's height and must scale together
+     for the helmet to sit on the shoulders. 1.25 is the widest of the two (helmet,
+     83.364% x 1.5), so neither image hits the global img max-width clamp. Bleeds to
+     the card edges; capped by height for landscape phones. */
   .footer-figure {
     display: block;
     position: relative;
     z-index: 1;
     order: 3;
     inset: auto;
-    height: 60vh;
-    min-height: 22rem;
+    align-self: center;
+    width: min(calc(100% + 3rem), calc(75svh * 1.25));
+    height: auto;
+    aspect-ratio: 1.25;
   }
+  .footer-figure img { max-width: none; }
 
   .footer-nav-col {
     position: relative;

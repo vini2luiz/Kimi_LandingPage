@@ -1,4 +1,4 @@
-import { splitReveal, playReveal } from "../lib/text-reveal.js";
+import { splitReveal, playReveal, attachTrailingDot } from "../lib/text-reveal.js";
 import { revealOnView, onScrollProgress } from "../lib/scroll.js";
 import { initContourBackdrop } from "../lib/contours.js";
 import { initChequeredDissolve } from "../lib/chequered-dissolve.js";
@@ -51,6 +51,7 @@ export function initPaddock(root) {
     const reveal = splitReveal(line, { unit: "word", stagger: 0 });
     window.setTimeout(() => playReveal(reveal), i * 130);
   });
+  attachTrailingDot(heading);
   const headingDot = heading.querySelector(".reveal-dot");
   window.setTimeout(() => headingDot?.classList.add("is-in"), lines.length * 130 + 110);
 

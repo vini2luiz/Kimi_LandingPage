@@ -52,8 +52,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .reveal-line {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 0.3em;
+  column-gap: 0.25em;
 }
+.reveal-line.is-letters { column-gap: 0; }
+.reveal-line > .reveal-dot { margin-inline-start: -0.25em; }
 .reveal-unit {
   display: inline-block;
   opacity: 0;

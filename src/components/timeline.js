@@ -1,4 +1,4 @@
-import { splitReveal, playReveal } from "../lib/text-reveal.js";
+import { splitReveal, playReveal, attachTrailingDot } from "../lib/text-reveal.js";
 import { onScrollProgress } from "../lib/scroll.js";
 import { initChequeredDissolve } from "../lib/chequered-dissolve.js";
 import { TIMELINE_ENTRIES } from "../data/timeline.js";
@@ -54,6 +54,7 @@ function initTitleReveal(root) {
     const reveal = splitReveal(line, { unit: "word", stagger: 0 });
     window.setTimeout(() => playReveal(reveal), i * 130);
   });
+  attachTrailingDot(heading);
   const dot = heading.querySelector(".reveal-dot");
   window.setTimeout(() => dot?.classList.add("is-in"), lines.length * 130 + 110);
 }
@@ -89,7 +90,9 @@ export function initTimeline(root) {
   }
 
   for (const { row } of rows) {
-    row.addEventListener("pointerenter", () => {
+    row.addEventListener("pointerenter", (e) => {
+      // Touch fires enter on every scroll gesture that starts on a plate — dimming is a mouse affordance.
+      if (e.pointerType !== "mouse") return;
       root.classList.add("is-dim-others");
       for (const { row: r } of rows) r.style.opacity = r === row ? "1" : "";
     });
