@@ -185,7 +185,7 @@
    normal flex column instead of trying to keep the absolute overlay working
    at phone widths.
    ========================================================================= */
-@media (max-width: 767px), (max-width: 1024px) and (orientation: portrait) {
+@media (max-width: 767px), (max-width: 1024px) and (orientation: portrait), (orientation: landscape) and (max-height: 500px) {
   [data-paddock] {
     display: flex;
     flex-direction: column;
@@ -203,6 +203,8 @@
     bottom: auto;
     transform: none !important;
     width: 100%;
+    max-width: calc(80svh * 1.15881);
+    margin-inline: auto;
     height: auto;
   }
 
@@ -253,4 +255,19 @@
     min-height: 110px;
     background: var(--surface-black);
   }
+  /* Start-aligned so the first round is reachable when the strip overflows
+     (space-evenly with negative free space can push it off the left edge),
+     and snapped so a swipe lands on a round rather than between two. */
+  .calendar-strip-list {
+    justify-content: flex-start;
+    gap: 2rem;
+    padding-block: 1.75rem;
+    padding-inline: 1.5rem;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.5rem;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .calendar-strip-list::-webkit-scrollbar { display: none; }
+  .calendar-round-item { scroll-snap-align: start; }
 }

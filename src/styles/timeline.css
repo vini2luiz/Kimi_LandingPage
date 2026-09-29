@@ -15,7 +15,7 @@
   padding-top: 11.7361cqw;
 }
 @media (max-width: 1023px) {
-  .timeline-wrapper { display: flex; flex-direction: column; gap: 2.5rem; padding: 96px 24px 0; }
+  .timeline-wrapper { display: flex; flex-direction: column; gap: 3rem; padding: 2.5rem 1.5rem 0; }
 }
 
 .timeline-title-h2 {
@@ -33,7 +33,7 @@
   color: var(--accent);
   font-size: max(3.8194cqw, 40px);
 }
-@media (max-width: 1023px) { .timeline-title-h2 { position: static; text-align: left; width: auto; } }
+@media (max-width: 1023px) { .timeline-title-h2 { position: static; text-align: left; width: auto; padding: 4rem 1.5rem 0; } }
 .timeline-title-dot { color: var(--foreground-on-dark); }
 
 .timeline-rail {
@@ -53,7 +53,9 @@
   height: max(32.0833cqw, 462px);
 }
 .timeline-row.is-side { height: max(15.0694cqw, 217px); }
-@media (max-width: 1023px) { .timeline-row, .timeline-row.is-side { height: auto; } }
+@media (max-width: 1023px) {
+  .timeline-row, .timeline-row.is-side { height: auto; display: flex; flex-direction: column; gap: 1rem; }
+}
 
 .timeline-plate {
   position: absolute;
@@ -67,7 +69,16 @@
 .timeline-plate.align-right { right: max(2.2222cqw, 32px); }
 .timeline-plate.align-center { left: 50%; transform: translateX(-50%); }
 @media (max-width: 1023px) {
-  .timeline-plate, .timeline-row.is-side .timeline-plate { position: static; width: 82%; aspect-ratio: 710/462; transform: none; }
+  /* Matches the .align-* specificity above, otherwise the desktop translateX(-50%) survives
+     and pushes every centre plate half its width off the left edge. The svh cap keeps a
+     plate inside a landscape phone's short viewport. */
+  .timeline-row .timeline-plate[class*="align-"] {
+    position: relative;
+    inset: auto;
+    width: min(82%, calc(70svh * 710 / 462));
+    aspect-ratio: 710 / 462;
+    transform: none;
+  }
   .timeline-plate.align-left, .timeline-plate.align-center { margin-inline: auto 0; }
   .timeline-plate.align-right { margin-inline: 0 auto; }
 }
@@ -90,6 +101,12 @@
   transition: opacity 1.5s var(--ease-entrance);
 }
 .timeline-year.is-settled { opacity: 0.4; }
+/* Stacked rows: the year becomes the row's label (year → photo → copy) instead of
+   floating over the row's centre, where it collided with the copy below the photo. */
+@media (max-width: 1023px) {
+  .timeline-year { position: static; order: -1; transform: none; line-height: 0.8; }
+  .timeline-year.is-settled { opacity: 1; }
+}
 
 .timeline-copy {
   position: absolute;
@@ -108,6 +125,10 @@
 }
 .timeline-copy.is-in { opacity: 1; transform: translateY(calc(-50% + 0px)); }
 .timeline-copy b { font-weight: 700; }
-@media (max-width: 1279px) { .timeline-copy { position: static; transform: none; max-width: none; margin-top: 1rem; } }
+@media (max-width: 1279px) {
+  /* .is-in too, or its desktop translateY(-50%) lifts the copy onto the photo above it. */
+  .timeline-copy, .timeline-copy.is-in { position: static; transform: none; max-width: none; margin-top: 1rem; }
+}
+@media (max-width: 1023px) { .timeline-copy, .timeline-copy.is-in { margin-top: 0; max-width: 34em; } }
 
 [data-timeline].is-dim-others .timeline-row:not(:hover) { opacity: 0.3; transition: opacity var(--duration-plate) var(--ease-plate); }

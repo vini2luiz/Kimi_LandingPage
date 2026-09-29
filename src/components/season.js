@@ -1,4 +1,4 @@
-import { splitReveal, playReveal } from "../lib/text-reveal.js";
+import { splitReveal, playReveal, attachTrailingDot } from "../lib/text-reveal.js";
 import { initChequeredDissolve } from "../lib/chequered-dissolve.js";
 import { onScrollProgress } from "../lib/scroll.js";
 import { CIRCUIT_VIEW, CIRCUIT_PATH, CIRCUIT_MARKERS } from "../data/circuit.js";
@@ -17,6 +17,27 @@ const CUMULATIVE = CIRCUIT_PATH.reduce((acc, point, i) => {
   return acc;
 }, []);
 const TOTAL = CUMULATIVE[CUMULATIVE.length - 1];
+
+// The lap's own bounds inside the 1440x800 artboard, padded for the marker glow.
+const TRACK = (() => {
+  const pad = 30;
+  const xs = CIRCUIT_PATH.map((p) => p[0]);
+  const ys = CIRCUIT_PATH.map((p) => p[1]);
+  const minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad;
+  const minY = Math.min(...ys) - pad, maxY = Math.max(...ys) + pad;
+  return { width: maxX - minX, height: maxY - minY, cx: (minX + maxX) / 2, cy: (minY + maxY) / 2 };
+})();
+
+// Cover-fits the artboard, unless that would crop the lap itself (portrait screens):
+// then the track is contained and centred so every corner marker stays on screen.
+function fitCircuit(w, h) {
+  const cover = Math.max(w / CIRCUIT_VIEW.width, h / CIRCUIT_VIEW.height);
+  if (TRACK.width * cover <= w * 0.94) {
+    return { scale: cover, ox: (w - CIRCUIT_VIEW.width * cover) / 2, oy: (h - CIRCUIT_VIEW.height * cover) / 2 };
+  }
+  const scale = Math.min((w * 0.9) / TRACK.width, (h * 0.5) / TRACK.height);
+  return { scale, ox: w / 2 - TRACK.cx * scale, oy: h / 2 - TRACK.cy * scale };
+}
 
 function easeInOutSine(x) { return -(Math.cos(Math.PI * x) - 1) / 2; }
 
@@ -112,6 +133,7 @@ function initHeadingReveal(root) {
     const reveal = splitReveal(line, { unit: "word", stagger: 0 });
     window.setTimeout(() => playReveal(reveal), i * 130);
   });
+  attachTrailingDot(heading);
   const dot = heading.querySelector(".reveal-dot");
   window.setTimeout(() => dot?.classList.add("is-in"), lines.length * 130 + 110);
 
@@ -164,9 +186,7 @@ function initCircuit(root) {
     const w = canvas.width;
     const h = canvas.height;
     if (!w || !h) return;
-    const scale = Math.max(w / CIRCUIT_VIEW.width, h / CIRCUIT_VIEW.height);
-    const ox = (w - CIRCUIT_VIEW.width * scale) / 2;
-    const oy = (h - CIRCUIT_VIEW.height * scale) / 2;
+    const { scale, ox, oy } = fitCircuit(w, h);
     ctx.clearRect(0, 0, w, h);
     ctx.setTransform(1, 0, 0, 1, ox, oy);
 

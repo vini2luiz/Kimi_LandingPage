@@ -7,10 +7,11 @@ export function splitReveal(element, { unit = "word", stagger = 0, delay = 0 } =
   hidden.textContent = text;
 
   const line = document.createElement("span");
-  line.className = "reveal-line";
+  line.className = unit === "letter" ? "reveal-line is-letters" : "reveal-line";
   line.setAttribute("aria-hidden", "true");
 
-  const parts = unit === "letter" ? Array.from(text) : text.split(/(\s+)/).filter((s) => s !== "");
+  // Word units are spaced by the line's column-gap, so whitespace never becomes a unit of its own.
+  const parts = unit === "letter" ? Array.from(text) : text.split(/\s+/).filter((s) => s !== "");
   parts.forEach((part, i) => {
     const span = document.createElement("span");
     span.className = unit === "letter" ? "reveal-unit is-letter" : "reveal-unit";
@@ -21,6 +22,14 @@ export function splitReveal(element, { unit = "word", stagger = 0, delay = 0 } =
 
   element.replaceChildren(hidden, line);
   return line;
+}
+
+// A heading's trailing dot sits outside its last split line; pull it in so it
+// hugs the final word instead of dropping onto a line of its own.
+export function attachTrailingDot(heading) {
+  const dot = heading.querySelector(":scope > .reveal-dot");
+  const lines = heading.querySelectorAll(".reveal-line");
+  if (dot && lines.length) lines[lines.length - 1].appendChild(dot);
 }
 
 export function playReveal(line) {

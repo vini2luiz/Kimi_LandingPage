@@ -1,4 +1,4 @@
-import { splitReveal, playReveal } from "../lib/text-reveal.js";
+import { splitReveal, playReveal, attachTrailingDot } from "../lib/text-reveal.js";
 import { onScrollProgress } from "../lib/scroll.js";
 import { initContourBackdrop } from "../lib/contours.js";
 
@@ -14,6 +14,7 @@ export function initFooter(root) {
     const reveal = splitReveal(line, { unit: "word", stagger: 0 });
     window.setTimeout(() => playReveal(reveal), i * 130);
   });
+  if (masthead) attachTrailingDot(masthead);
   const mastheadDot = masthead?.querySelector(".reveal-dot");
   window.setTimeout(() => mastheadDot?.classList.add("is-in"), lines.length * 130 + 110);
 
